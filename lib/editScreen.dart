@@ -21,7 +21,7 @@ class _EditScreenState extends State<EditScreen> {
 
   String text = "";
   String message = "";
-  int i = 0;
+  int? index;
 
   @override
   Widget build(BuildContext context) {
@@ -46,17 +46,17 @@ class _EditScreenState extends State<EditScreen> {
                   text = "";
                   print(widget.list);
                   int length = widget.list.length;
-                  for (i = 0; i < length; i++) {
-                    if (widget.list[i].rollno ==
-                        int.parse(id.text.toString())) {
-                      rollNoController.text = widget.list[i].rollno.toString();
-                      nameController.text = widget.list[i].name.toString();
-                      cityController.text = widget.list[i].city.toString();
-                      // text = widget.list[i].toString();
-                      print("${widget.list[i]}");
-                    } else {
-                      text = " No Student Found ! ";
-                    }
+                  index = widget.list.indexWhere((element) =>
+                      element.rollno == int.parse(id.text.toString()));
+                  if ((index ?? -1) >= 0) {
+                    // student found
+                    rollNoController.text =
+                        widget.list[index!].rollno.toString();
+                    nameController.text = widget.list[index!].name.toString();
+                    cityController.text = widget.list[index!].city.toString();
+                  } else {
+                    // index is -1 student not found
+                    text = "Student record nto found...";
                   }
                 });
               },
@@ -101,18 +101,18 @@ class _EditScreenState extends State<EditScreen> {
                             if (rollNoController.text.isNotEmpty &&
                                 nameController.text.isNotEmpty &&
                                 cityController.text.isNotEmpty) {
-                              widget.list[i].rollno =
-                                  int.parse(rollNoController.text.toString());
-                              widget.list[i].name =
-                                  nameController.text.toString();
-                              widget.list[i].city =
-                                  cityController.text.toString();
+                              if (index != null) {
+                                widget.list[index!].rollno =
+                                    int.parse(rollNoController.text.toString());
+                                widget.list[index!].name =
+                                    nameController.text.toString();
+                                widget.list[index!].city =
+                                    cityController.text.toString();
 
-                              print(nameController.text.toString());
-
-                              nameController.clear();
-                              rollNoController.clear();
-                              cityController.clear();
+                                nameController.clear();
+                                rollNoController.clear();
+                                cityController.clear();
+                              }
                             } else {
                               message = "Fill all fields !";
                             }
